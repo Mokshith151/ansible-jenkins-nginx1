@@ -1,6 +1,6 @@
 ---
 - name: Install Nginx
-  hosts: managed_nodes
+  hosts: dev
   become: yes
 
   tasks:
