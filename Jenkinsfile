@@ -3,9 +3,7 @@ pipeline {
     agent any
 
     environment {
-        JENKINS_TRIGGERED = 'true'
-        ANSIBLE_USER      = 'ansible'
-        PRIVATE_KEY       = credentials('ansible-ssh-key')
+        ANSIBLE_HOST_KEY_CHECKING = 'False'
     }
 
     stages {
@@ -24,13 +22,7 @@ pipeline {
 
         stage('Run Playbook') {
             steps {
-                sh '''
-                    export JENKINS_TRIGGERED=true
-                    ansible-playbook playbooks/install_nginx.yml \
-                    -i /etc/ansible/hosts \
-                    -u ${ANSIBLE_USER} \
-                    --private-key=${PRIVATE_KEY}
-                '''
+                sh 'ansible-playbook playbooks/install_nginx.yml -i /etc/ansible/hosts'
             }
         }
 
