@@ -1,0 +1,53 @@
+---
+- name: Install Nginx
+  hosts: managed_nodes
+  become: yes
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start Nginx
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Check Nginx status
+      command: systemctl is-active nginx
+      register: result
+
+    - name: Show status
+      debug:
+        msg: "Nginx is {{ result.stdout }}"
+```
+
+---
+
+## That's it! Only 5 tasks:
+
+| Task | What it does |
+|------|-------------|
+| **Update apt cache** | Refreshes package list |
+| **Install Nginx** | Installs nginx package |
+| **Start Nginx** | Starts & enables on boot |
+| **Check status** | Gets nginx status |
+| **Show status** | Prints active/inactive |
+
+---
+
+## Your final GitHub structure:
+```
+ansible-jenkins-nginx/
+├── Jenkinsfile
+├── inventory/
+│   └── hosts
+└── playbooks/
+    └── install_nginx.yml
