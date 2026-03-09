@@ -36,7 +36,7 @@ pipeline {
 
         stage('Verify Nginx') {
             steps {
-                sh 'ansible managed_nodes -i /etc/ansible/hosts -m command -a "systemctl is-active nginx"'
+                sh 'ansible dev -i /etc/ansible/hosts -m command -a "systemctl is-active nginx"'
             }
         }
 
