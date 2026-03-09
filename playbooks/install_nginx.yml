@@ -15,7 +15,7 @@
         state: present
 
     - name: Start Nginx
-      systemd:
+      service:
         name: nginx
         state: started
         enabled: yes
@@ -23,31 +23,8 @@
     - name: Check Nginx status
       command: systemctl is-active nginx
       register: result
+      changed_when: false
 
     - name: Show status
       debug:
         msg: "Nginx is {{ result.stdout }}"
-```
-
----
-
-## That's it! Only 5 tasks:
-
-| Task | What it does |
-|------|-------------|
-| **Update apt cache** | Refreshes package list |
-| **Install Nginx** | Installs nginx package |
-| **Start Nginx** | Starts & enables on boot |
-| **Check status** | Gets nginx status |
-| **Show status** | Prints active/inactive |
-
----
-
-## Your final GitHub structure:
-```
-ansible-jenkins-nginx/
-├── Jenkinsfile
-├── inventory/
-│   └── hosts
-└── playbooks/
-    └── install_nginx.yml
