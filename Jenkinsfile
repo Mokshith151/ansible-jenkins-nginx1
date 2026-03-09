@@ -18,15 +18,16 @@ pipeline {
 
         stage('Syntax Check') {
             steps {
-                sh 'ansible-playbook playbooks/install_nginx.yml --syntax-check'
+                sh 'ansible-playbook playbooks/install_nginx.yml --syntax-check -i /etc/ansible/hosts'
             }
         }
 
         stage('Run Playbook') {
             steps {
                 sh '''
+                    export JENKINS_TRIGGERED=true
                     ansible-playbook playbooks/install_nginx.yml \
-                    -i inventory/hosts \
+                    -i /etc/ansible/hosts \
                     -u ${ANSIBLE_USER} \
                     --private-key=${PRIVATE_KEY}
                 '''
@@ -35,7 +36,7 @@ pipeline {
 
         stage('Verify Nginx') {
             steps {
-                sh 'ansible managed_nodes -i inventory/hosts -m command -a "systemctl is-active nginx"'
+                sh 'ansible managed_nodes -i /etc/ansible/hosts -m command -a "systemctl is-active nginx"'
             }
         }
 
@@ -46,7 +47,7 @@ pipeline {
             echo 'Nginx installed successfully!'
         }
         failure {
-            echo 'Pipeline failed — check logs!'
+            echo 'Pipeline failed - check logs!'
         }
     }
 }
